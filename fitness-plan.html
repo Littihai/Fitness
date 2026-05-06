@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แผนออกกำลังกายประจำสัปดาห์</title>
+<link rel="stylesheet" href="fitness-plan.css">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-pill">โปรแกรมออกกำลังกายส่วนบุคคล</div>
+    <h1>แผน<span>ออกกำลังกาย</span><br>รายสัปดาห์</h1>
+    <p class="header-sub">ออกกำลังกายที่บ้าน · ดัมเบล · เชือกกระโดด · บาร์วิดพื้น</p>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box" style="--accent: var(--cardio)">
+      <div class="stat-label">น้ำหนักปัจจุบัน</div>
+      <div class="stat-val">82 <span class="stat-unit">กก.</span></div>
+      <div class="stat-note">เป้าหมาย 74–76 กก.</div>
+    </div>
+    <div class="stat-box" style="--accent: var(--strength)">
+      <div class="stat-label">ส่วนสูง</div>
+      <div class="stat-val">183 <span class="stat-unit">ซม.</span></div>
+    </div>
+    <div class="stat-box" style="--accent: var(--light)">
+      <div class="stat-label">BMI ปัจจุบัน</div>
+      <div class="stat-val" style="color: #F59E0B">24.5</div>
+      <div class="stat-note">ขอบบนของปกติ</div>
+    </div>
+    <div class="stat-box" style="--accent: var(--rest)">
+      <div class="stat-label">เป้าหมาย BMI</div>
+      <div class="stat-val" style="color: #34D399">22–23</div>
+      <div class="stat-note">สมส่วนเหมาะสม</div>
+    </div>
+  </div>
+
+  <!-- Day Tabs -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <div class="tab active" style="--tab-color: var(--strength)" data-panel="mon" onclick="switchTab(this,'mon')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--strength)">จ</div>
+        <div class="tab-day">จันทร์</div>
+        <div class="tab-type">Strength</div>
+      </div>
+      <div class="tab" style="--tab-color: var(--cardio)" data-panel="tue" onclick="switchTab(this,'tue')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--cardio)">อ</div>
+        <div class="tab-day">อังคาร</div>
+        <div class="tab-type">Cardio</div>
+      </div>
+      <div class="tab" style="--tab-color: var(--fullbody)" data-panel="wed" onclick="switchTab(this,'wed')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--fullbody)">พ</div>
+        <div class="tab-day">พุธ</div>
+        <div class="tab-type">Lower</div>
+      </div>
+      <div class="tab" style="--tab-color: var(--rest)" data-panel="thu" onclick="switchTab(this,'thu')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--rest)">พฤ</div>
+        <div class="tab-day">พฤหัส</div>
+        <div class="tab-type">Rest</div>
+      </div>
+      <div class="tab" style="--tab-color: var(--fullbody)" data-panel="fri" onclick="switchTab(this,'fri')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--fullbody)">ศ</div>
+        <div class="tab-day">ศุกร์</div>
+        <div class="tab-type">Full Body</div>
+      </div>
+      <div class="tab" style="--tab-color: var(--cardio)" data-panel="sat" onclick="switchTab(this,'sat')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--cardio)">ส</div>
+        <div class="tab-day">เสาร์</div>
+        <div class="tab-type">HIIT</div>
+      </div>
+      <div class="tab" style="--tab-color: var(--rest)" data-panel="sun" onclick="switchTab(this,'sun')">
+        <div class="tab-bar"></div>
+        <div class="tab-badge" style="background:var(--rest)">อา</div>
+        <div class="tab-day">อาทิตย์</div>
+        <div class="tab-type">Rest</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MONDAY ===== -->
+  <div class="panel active" id="panel-mon">
+    <div class="panel-header">
+      <div class="panel-title-area">
+        <div class="type-badge" style="background:rgba(43,92,230,0.15); color:#7BA4FF; border:1px solid rgba(43,92,230,0.3)">
+          💪 Upper Body Strength
+        </div>
+        <div class="panel-title">วันจันทร์</div>
+        <div class="panel-sub">เน้นกล้ามเนื้อส่วนบน — อก · หลัง · ไหล่ · แขน</div>
+      </div>
+      <div class="panel-meta">
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#7BA4FF">35</div>
+          <div class="meta-chip-label">นาที</div>
+        </div>
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#7BA4FF">5</div>
+          <div class="meta-chip-label">ท่า</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercises-grid">
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
+        <div class="ex-num" style="--accent-color:var(--strength)">01 — อก</div>
+        <div class="ex-name">Push-up</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12–15</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
+        <div class="ex-num" style="--accent-color:var(--strength)">02 — หลัง</div>
+        <div class="ex-name">Dumbbell Row</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
+        <div class="ex-num" style="--accent-color:var(--strength)">03 — ไหล่</div>
+        <div class="ex-name">Overhead Press</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
+        <div class="ex-num" style="--accent-color:var(--strength)">04 — หลังส่วนบน</div>
+        <div class="ex-name">Pull-up / Chin-up (บาร์วิดพื้น)</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>8–10</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>90</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
+        <div class="ex-num" style="--accent-color:var(--strength)">05 — แขน</div>
+        <div class="ex-name">Bicep Curl</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>2</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-section">
+      <div class="section-heading">ตารางเวลาวันนี้</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">05:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--strength)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">⚡ ออกกำลังกาย 35 นาที</div><div class="tl-desc">Upper body · ดัมเบล + บาร์วิดพื้น</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:10</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div><div class="tl-desc">ไข่ 2–3 ฟอง · ข้าวกล้องหรือขนมปังโฮลวีต · กล้วย</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer" style="--dot-color:var(--muted)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🚌 ขึ้นรถรับส่ง</div><div class="tl-desc">พักผ่อน / ฟังพอดแคสต์</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">12:00</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🥗 อาหารกลางวัน</div><div class="tl-desc">โปรตีน + ผัก + ข้าว ½ ถ้วย</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">18:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🍽️ อาหารเย็น (มื้อเบา)</div><div class="tl-desc">โปรตีน + ผักต้ม งดแป้งตอนเย็น</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">22:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
+          <div class="tl-content"><div class="tl-label">😴 นอน</div><div class="tl-desc">7 ชั่วโมง = ตื่น 05:30</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TUESDAY ===== -->
+  <div class="panel" id="panel-tue">
+    <div class="panel-header">
+      <div class="panel-title-area">
+        <div class="type-badge" style="background:rgba(232,83,26,0.15); color:#FF8C5A; border:1px solid rgba(232,83,26,0.3)">
+          🔥 Cardio + Core
+        </div>
+        <div class="panel-title">วันอังคาร</div>
+        <div class="panel-sub">เผาผลาญไขมัน — เชือกกระโดด HIIT + core</div>
+      </div>
+      <div class="panel-meta">
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#FF8C5A">30</div>
+          <div class="meta-chip-label">นาที</div>
+        </div>
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#FF8C5A">5</div>
+          <div class="meta-chip-label">ท่า</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercises-grid">
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">01 — คาร์ดิโอ</div>
+        <div class="ex-name">เชือกกระโดด HIIT</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill">กระโดด <strong>30</strong> วิ</div>
+          <div class="ex-set-pill">พัก <strong>15</strong> วิ</div>
+          <div class="ex-set-pill"><strong>10–15</strong> รอบ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">02 — ทั้งตัว</div>
+        <div class="ex-name">Burpee</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">03 — core</div>
+        <div class="ex-name">Mountain Climbers</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>20</strong> ครั้ง/ข้าง</div>
+          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">04 — core</div>
+        <div class="ex-name">Plank</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>45</strong> วินาที</div>
+          <div class="ex-set-pill">พัก <strong>30</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">05 — core</div>
+        <div class="ex-name">Leg Raises</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-section">
+      <div class="section-heading">ตารางเวลาวันนี้</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">05:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--cardio)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🔥 HIIT 30 นาที</div><div class="tl-desc">เชือกกระโดด + core circuit</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:05</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div><div class="tl-desc">โปรตีนสูง — ไข่ + กรีกโยเกิร์ต</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer" style="--dot-color:var(--muted)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🚌 ขึ้นรถรับส่ง</div><div class="tl-desc">ดื่มน้ำ 500 มล. ระหว่างเดินทาง</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">22:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
+          <div class="tl-content"><div class="tl-label">😴 นอน</div><div class="tl-desc">ร่างกายซ่อมแซมกล้ามเนื้อระหว่างหลับ</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WEDNESDAY ===== -->
+  <div class="panel" id="panel-wed">
+    <div class="panel-header">
+      <div class="panel-title-area">
+        <div class="type-badge" style="background:rgba(124,58,237,0.15); color:#B48EFF; border:1px solid rgba(124,58,237,0.3)">
+          🦵 Lower Body Strength
+        </div>
+        <div class="panel-title">วันพุธ</div>
+        <div class="panel-sub">เน้นกล้ามเนื้อส่วนล่าง — ขา · สะโพก · น่อง</div>
+      </div>
+      <div class="panel-meta">
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#B48EFF">40</div>
+          <div class="meta-chip-label">นาที</div>
+        </div>
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#B48EFF">5</div>
+          <div class="meta-chip-label">ท่า</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercises-grid">
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">01 — ต้นขา</div>
+        <div class="ex-name">Goblet Squat (ดัมเบล)</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">02 — ต้นขา</div>
+        <div class="ex-name">Reverse Lunge (ดัมเบล)</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">03 — หลังขา</div>
+        <div class="ex-name">Romanian Deadlift</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">04 — สะโพก</div>
+        <div class="ex-name">Glute Bridge</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">05 — น่อง</div>
+        <div class="ex-name">Calf Raise</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>20</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-section">
+      <div class="section-heading">ตารางเวลาวันนี้</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">05:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--fullbody)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🦵 Lower body 40 นาที</div><div class="tl-desc">ดัมเบล squat/lunge/deadlift</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:15</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div><div class="tl-desc">คาร์บเชิงซ้อน + โปรตีน เพื่อพลังงาน</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer" style="--dot-color:var(--muted)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🚌 ขึ้นรถรับส่ง</div><div class="tl-desc">—</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">22:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
+          <div class="tl-content"><div class="tl-label">😴 นอน</div><div class="tl-desc">กล้ามเนื้อขาต้องการการพักฟื้น</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== THURSDAY (REST) ===== -->
+  <div class="panel" id="panel-thu">
+    <div class="rest-card">
+      <div class="rest-icon">🌿</div>
+      <div class="rest-title">วันพฤหัส — วันพักเบา</div>
+      <div class="rest-sub">ร่างกายต้องการเวลาซ่อมแซมกล้ามเนื้อ<br>การพักคือส่วนสำคัญของการพัฒนา ไม่ใช่การหยุด</div>
+      <div class="rest-tips">
+        <div class="rest-tip">🚶 เดิน 15–20 นาที</div>
+        <div class="rest-tip">🧘 ยืดกล้ามเนื้อ</div>
+        <div class="rest-tip">💧 ดื่มน้ำ 2.5 ลิตร</div>
+        <div class="rest-tip">😴 นอนหลับให้ครบ</div>
+      </div>
+    </div>
+    <div class="schedule-section">
+      <div class="section-heading">ตารางเวลาวันนี้</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">06:00</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--rest)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🌅 ตื่นนอนสาย (ไม่ต้องออกกำลังกาย)</div><div class="tl-desc">ร่างกายได้พักเต็มที่</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">18:00</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--rest)"></div><div class="tl-line"></div></div>
+          <div class="tl-content"><div class="tl-label">🧘 ยืดกล้ามเนื้อ 15–20 นาที</div><div class="tl-desc">เน้นขาและหลัง หลังจากนั่งทำงานทั้งวัน</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-time">22:30</div></div>
+          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
+          <div class="tl-content"><div class="tl-label">😴 นอนหลับให้ครบ 7 ชั่วโมง</div><div class="tl-desc">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FRIDAY ===== -->
+  <div class="panel" id="panel-fri">
+    <div class="panel-header">
+      <div class="panel-title-area">
+        <div class="type-badge" style="background:rgba(124,58,237,0.15); color:#B48EFF; border:1px solid rgba(124,58,237,0.3)">
+          ⚡ Full Body Circuit
+        </div>
+        <div class="panel-title">วันศุกร์</div>
+        <div class="panel-sub">เต็มสัปดาห์ปิดด้วย circuit training ทั้งร่างกาย</div>
+      </div>
+      <div class="panel-meta">
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#B48EFF">40</div>
+          <div class="meta-chip-label">นาที</div>
+        </div>
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#B48EFF">6</div>
+          <div class="meta-chip-label">ท่า</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercises-grid">
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">01 — ขา + ไหล่</div>
+        <div class="ex-name">Squat to Press</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">02 — อก</div>
+        <div class="ex-name">Push-up</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">03 — หลัง</div>
+        <div class="ex-name">Dumbbell Row</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">04 — ขา + คาร์ดิโอ</div>
+        <div class="ex-name">Jump Squat</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">05 — core</div>
+        <div class="ex-name">Plank Rotation</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>30</strong> วินาที</div>
+          <div class="ex-set-pill">พัก <strong>30</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
+        <div class="ex-num" style="--accent-color:var(--fullbody)">06 — cool-down</div>
+        <div class="ex-name">เชือกกระโดด (เบาๆ)</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>2</strong> นาที</div>
+          <div class="ex-set-pill">ความเร็วปานกลาง</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SATURDAY ===== -->
+  <div class="panel" id="panel-sat">
+    <div class="panel-header">
+      <div class="panel-title-area">
+        <div class="type-badge" style="background:rgba(232,83,26,0.15); color:#FF8C5A; border:1px solid rgba(232,83,26,0.3)">
+          🔥 HIIT คาร์ดิโอ
+        </div>
+        <div class="panel-title">วันเสาร์</div>
+        <div class="panel-sub">วันหยุด — เผาพลังงานเต็มที่ ไม่มีข้อจำกัดเวลา</div>
+      </div>
+      <div class="panel-meta">
+        <div class="meta-chip">
+          <div class="meta-chip-val" style="color:#FF8C5A">40</div>
+          <div class="meta-chip-label">นาที</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercises-grid">
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">warm-up</div>
+        <div class="ex-name">เชือกกระโดดวอร์มอัพ</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> นาที</div>
+          <div class="ex-set-pill">ความเร็วปานกลาง</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">01 — HIIT</div>
+        <div class="ex-name">เชือกกระโดด Sprint</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill">สปรินต์ <strong>40</strong> วิ</div>
+          <div class="ex-set-pill">พัก <strong>20</strong> วิ</div>
+          <div class="ex-set-pill"><strong>10</strong> รอบ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">02 — ทั้งตัว</div>
+        <div class="ex-name">Burpee + Tuck Jump</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>4</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>8</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">03 — core</div>
+        <div class="ex-name">V-ups</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+        </div>
+      </div>
+      <div class="ex-card">
+        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
+        <div class="ex-num" style="--accent-color:var(--cardio)">cool-down</div>
+        <div class="ex-name">ยืดกล้ามเนื้อ</div>
+        <div class="ex-sets">
+          <div class="ex-set-pill"><strong>10</strong> นาที</div>
+          <div class="ex-set-pill">ทั่วร่างกาย</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SUNDAY (REST) ===== -->
+  <div class="panel" id="panel-sun">
+    <div class="rest-card">
+      <div class="rest-icon">☀️</div>
+      <div class="rest-title">วันอาทิตย์ — วันพักผ่อนเต็ม</div>
+      <div class="rest-sub">สัปดาห์ใหม่เริ่มพรุ่งนี้ วันนี้ให้ร่างกายและจิตใจได้ชาร์จพลังงาน<br>ไม่ต้องออกกำลังกาย ยืดเบาๆ ได้ถ้าอยาก</div>
+      <div class="rest-tips">
+        <div class="rest-tip">🛁 พักผ่อนเต็มที่</div>
+        <div class="rest-tip">🧘 โยคะเบาๆ ได้</div>
+        <div class="rest-tip">🥗 กินดี มีสุขภาพ</div>
+        <div class="rest-tip">🌙 นอนหลับให้ครบ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nutrition Quick Guide -->
+  <div class="schedule-section">
+    <div class="section-heading">แนวทางการกิน</div>
+    <div class="nutrition-grid">
+      <div class="nut-card">
+        <div class="nut-icon">🌅</div>
+        <div class="nut-title">มื้อเช้า (ก่อน 06:30)</div>
+        <ul class="nut-list">
+          <li>ไข่ต้ม / ไข่ดาว 2–3 ฟอง</li>
+          <li>ข้าวกล้อง / ขนมปังโฮลวีต</li>
+          <li>กล้วย 1 ลูก</li>
+          <li>น้ำเปล่า 2 แก้ว</li>
+        </ul>
+      </div>
+      <div class="nut-card">
+        <div class="nut-icon">☀️</div>
+        <div class="nut-title">มื้อกลางวัน</div>
+        <ul class="nut-list">
+          <li>ไก่ / ปลา / เต้าหู้</li>
+          <li>ผัก 1–2 อย่าง</li>
+          <li>ข้าว ½–¾ ถ้วย</li>
+          <li>หลีกเลี่ยงน้ำหวาน</li>
+        </ul>
+      </div>
+      <div class="nut-card">
+        <div class="nut-icon">🌙</div>
+        <div class="nut-title">มื้อเย็น (ก่อน 19:00)</div>
+        <ul class="nut-list">
+          <li>ปลา / ไก่ต้ม (โปรตีนสูง)</li>
+          <li>ผักนึ่ง / ต้ม 2 ถ้วย</li>
+          <li>ลดแป้ง / งดข้าว</li>
+          <li>หยุดกินหลัง 21:30</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--strength)"></div>Strength — กล้ามเนื้อ</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--cardio)"></div>Cardio — คาร์ดิโอ</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--fullbody)"></div>Full Body — เต็มตัว</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--rest)"></div>Rest — พักฟื้น</div>
+  </div>
+
+</div>
+
+<script src="fitness-plan.js"></script>
+</body>
+</html>
