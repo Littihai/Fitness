@@ -1,1178 +1,2826 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนออกกำลังกายประจำสัปดาห์</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --cardio: #E8531A;
-    --strength: #2B5CE6;
-    --fullbody: #7C3AED;
-    --rest: #059669;
-    --light: #F59E0B;
-    --bg: #0A0A0F;
-    --surface: #13131A;
-    --surface2: #1C1C27;
-    --border: rgba(255,255,255,0.07);
-    --text: #F0F0F8;
-    --muted: #7A7A9A;
-    --font: 'Sarabun', 'Noto Sans Thai', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Ambient glow bg */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -200px; left: 50%;
-    transform: translateX(-50%);
-    width: 800px; height: 600px;
-    background: radial-gradient(ellipse, rgba(43,92,230,0.12) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 20px 60px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Header */
-  header {
-    padding: 48px 0 36px;
-    text-align: center;
-  }
-
-  .header-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(43,92,230,0.15);
-    border: 1px solid rgba(43,92,230,0.3);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #7BA4FF;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .header-pill::before { content: '●'; font-size: 8px; animation: blink 2s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 12px;
-  }
-
-  h1 span {
-    background: linear-gradient(135deg, #7BA4FF 0%, #B48EFF 50%, #FF7E6B 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .header-sub {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 400;
-  }
-
-  /* Stats row */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 36px;
-  }
-
-  .stat-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-box::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--accent, var(--strength));
-  }
-
-  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-  .stat-val { font-size: 24px; font-weight: 700; line-height: 1; }
-  .stat-unit { font-size: 13px; font-weight: 400; color: var(--muted); }
-  .stat-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-  /* Day tabs */
-  .tabs-wrapper {
-    margin-bottom: 24px;
-  }
-
-  .tabs {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 8px;
-  }
-
-  .tab {
-    position: relative;
-    cursor: pointer;
-    border-radius: 10px;
-    padding: 10px 4px;
-    text-align: center;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-    background: transparent;
-  }
-
-  .tab:hover { background: rgba(255,255,255,0.04); }
-
-  .tab.active {
-    border-color: var(--tab-color, var(--strength));
-    background: rgba(255,255,255,0.05);
-  }
-
-  .tab.active .tab-bar {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-
-  .tab-bar {
-    position: absolute;
-    top: 0; left: 8px; right: 8px;
-    height: 3px;
-    border-radius: 0 0 3px 3px;
-    background: var(--tab-color, var(--strength));
-    opacity: 0;
-    transform: scaleX(0.3);
-    transition: all 0.3s ease;
-  }
-
-  .tab-day {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    margin-bottom: 5px;
-    transition: color 0.2s;
-  }
-
-  .tab.active .tab-day { color: var(--text); }
-
-  .tab-badge {
-    display: inline-block;
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    line-height: 28px;
-    font-size: 13px;
-    font-weight: 700;
-    background: var(--tab-color, var(--strength));
-    color: white;
-    margin: 0 auto 5px;
-    opacity: 0.25;
-    transition: opacity 0.2s;
-  }
-
-  .tab.active .tab-badge { opacity: 1; }
-
-  .tab-type {
-    font-size: 9px;
-    color: var(--muted);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    transition: color 0.2s;
-  }
-
-  .tab.active .tab-type { color: var(--tab-color, var(--strength)); }
-
-  /* Today indicator */
-  .today-dot {
-    position: absolute;
-    bottom: 5px; left: 50%;
-    transform: translateX(-50%);
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--tab-color);
-  }
-
-  /* Content panel */
-  .panel {
-    display: none;
-    animation: fadeUp 0.3s ease;
-  }
-
-  .panel.active { display: block; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    gap: 16px;
-  }
-
-  .panel-title-area {}
-
-  .type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border-radius: 100px;
-    padding: 7px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-  }
-
-  .panel-title {
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-
-  .panel-sub { font-size: 14px; color: var(--muted); }
-
-  .panel-meta {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    flex-shrink: 0;
-  }
-
-  .meta-chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    text-align: center;
-    min-width: 70px;
-  }
-
-  .meta-chip-val { font-size: 20px; font-weight: 700; }
-  .meta-chip-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
-
-  /* Exercise cards */
-  .exercises-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-
-  .ex-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-  }
-
-  .ex-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.14);
-  }
-
-  .ex-card-accent {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent-color);
-  }
-
-  .ex-num {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--accent-color);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-  }
-
-  .ex-name {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    line-height: 1.3;
-  }
-
-  .ex-sets {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .ex-set-pill {
-    background: rgba(255,255,255,0.06);
-    border-radius: 100px;
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-  }
-
-  .ex-set-pill strong { color: var(--text); font-weight: 600; }
-
-  /* Schedule section */
-  .schedule-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-  }
-
-  .section-heading {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 18px;
-  }
-
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .tl-item {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    position: relative;
-  }
-
-  .tl-left {
-    width: 50px;
-    flex-shrink: 0;
-    text-align: right;
-    padding-top: 2px;
-  }
-
-  .tl-time { font-size: 12px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
-
-  .tl-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 20px;
-    flex-shrink: 0;
-  }
-
-  .tl-dot-outer {
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    border: 2px solid var(--dot-color, #444);
-    background: var(--bg);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
-  }
-
-  .tl-dot-outer.filled { background: var(--dot-color, #444); }
-
-  .tl-line { width: 1px; flex: 1; background: var(--border); min-height: 20px; }
-
-  .tl-content { flex: 1; padding-bottom: 20px; }
-  .tl-label { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-  .tl-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
-
-  /* Nutrition section */
-  .nutrition-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-
-  .nut-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-
-  .nut-icon { font-size: 20px; margin-bottom: 8px; }
-  .nut-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
-
-  .nut-list { list-style: none; }
-  .nut-list li {
-    font-size: 12px;
-    color: var(--muted);
-    padding: 4px 0;
-    border-bottom: 1px solid var(--border);
-    line-height: 1.5;
-  }
-  .nut-list li:last-child { border-bottom: none; }
-
-  /* Rest day */
-  .rest-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    text-align: center;
-    margin-bottom: 24px;
-  }
-
-  .rest-icon { font-size: 52px; margin-bottom: 16px; }
-  .rest-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-  .rest-sub { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 400px; margin: 0 auto 24px; }
-
-  .rest-tips {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .rest-tip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 8px 18px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  /* Legend bar */
-  .legend {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding: 16px 0;
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-  }
-
-  @media (max-width: 640px) {
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
-    .nutrition-grid { grid-template-columns: 1fr; }
-    .panel-header { flex-direction: column; }
-    .tab-type { display: none; }
-    .tab-badge { width: 24px; height: 24px; line-height: 24px; font-size: 11px; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แผนออกกำลังกายประจำสัปดาห์</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --cardio: #e8531a;
+      --strength: #2b5ce6;
+      --fullbody: #7c3aed;
+      --rest: #059669;
+      --light: #f59e0b;
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c27;
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #f0f0f8;
+      --muted: #7a7a9a;
+      --font: "Sarabun", "Noto Sans Thai", sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse,
+          rgba(43, 92, 230, 0.12) 0%,
+          transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      padding: 48px 0 36px;
+      text-align: center;
+    }
+
+    .header-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(43, 92, 230, 0.15);
+      border: 1px solid rgba(43, 92, 230, 0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7ba4ff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .header-pill::before {
+      content: "●";
+      font-size: 8px;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg,
+          #7ba4ff 0%,
+          #b48eff 50%,
+          #ff7e6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-sub {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent, var(--strength));
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .stat-val {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .stat-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Progress bar stats */
+    .progress-stat {
+      margin-top: 8px;
+    }
+
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      height: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--accent, var(--strength));
+      transition: width 0.6s ease;
+    }
+
+    /* Weekly summary */
+    .weekly-summary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .ws-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .ws-days {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .ws-day-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: all 0.3s;
+      position: relative;
+      cursor: default;
+    }
+
+    .ws-day-dot.done {
+      background: var(--color);
+      border-color: var(--color);
+      color: white;
+    }
+
+    .ws-day-dot.done::after {
+      content: "✓";
+      position: absolute;
+      font-size: 14px;
+    }
+
+    .ws-day-dot.done span {
+      display: none;
+    }
+
+    .ws-streak {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 16px;
+      border-left: 1px solid var(--border);
+    }
+
+    .ws-streak-val {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f59e0b;
+    }
+
+    .ws-streak-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Tabs */
+    .tabs-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 8px;
+    }
+
+    .tab {
+      position: relative;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 10px 4px;
+      text-align: center;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+
+    .tab:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab.active {
+      border-color: var(--tab-color, var(--strength));
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab.active .tab-bar {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    .tab-bar {
+      position: absolute;
+      top: 0;
+      left: 8px;
+      right: 8px;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: var(--tab-color, var(--strength));
+      opacity: 0;
+      transform: scaleX(0.3);
+      transition: all 0.3s ease;
+    }
+
+    .tab-day {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+      transition: color 0.2s;
+    }
+
+    .tab.active .tab-day {
+      color: var(--text);
+    }
+
+    .tab-badge {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      line-height: 28px;
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--tab-color, var(--strength));
+      color: white;
+      margin: 0 auto 5px;
+      opacity: 0.25;
+      transition: opacity 0.2s;
+      position: relative;
+    }
+
+    .tab.active .tab-badge {
+      opacity: 1;
+    }
+
+    .tab-type {
+      font-size: 9px;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .tab.active .tab-type {
+      color: var(--tab-color, var(--strength));
+    }
+
+    .today-dot {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--tab-color);
+    }
+
+    .tab-done-check {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tab-done-check.show {
+      opacity: 1;
+    }
+
+    /* Panel */
+    .panel {
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .panel-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .panel-meta {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+
+    .meta-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      text-align: center;
+      min-width: 70px;
+    }
+
+    .meta-chip-val {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .meta-chip-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    /* ===== EXERCISE CARDS ===== */
+    .exercises-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .ex-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition:
+        transform 0.15s ease,
+        border-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .ex-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .ex-card.active-workout {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.15);
+    }
+
+    /* Animation area */
+    .ex-animation {
+      height: 130px;
+      background: var(--surface2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ex-animation svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Card body */
+    .ex-card-body {
+      padding: 14px 18px 16px;
+      position: relative;
+    }
+
+    .ex-card-accent {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent-color);
+    }
+
+    .ex-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--accent-color);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .ex-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .ex-sets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .ex-set-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .ex-set-pill strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Set tracker */
+    .set-tracker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .set-tracker-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .set-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .set-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: transparent;
+      position: relative;
+    }
+
+    .set-dot:hover {
+      border-color: var(--accent-color);
+    }
+
+    .set-dot.done {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      color: white;
+    }
+
+    .set-dot.done::after {
+      content: "✓";
+    }
+
+    /* Start workout button */
+    .start-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .start-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .start-btn.running {
+      background: rgba(232, 83, 26, 0.1);
+      border-color: #e8531a;
+      color: #ff8c5a;
+    }
+
+    /* ===== WORKOUT TIMER MODAL ===== */
+    .timer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .timer-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .timer-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 48px;
+      text-align: center;
+      min-width: 340px;
+      max-width: 440px;
+      width: 90vw;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+
+    .timer-overlay.show .timer-modal {
+      transform: scale(1);
+    }
+
+    .timer-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: color 0.2s;
+    }
+
+    .timer-close:hover {
+      color: var(--text);
+    }
+
+    .timer-exercise-name {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .timer-mode-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 14px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 28px;
+    }
+
+    .timer-mode-label.work {
+      background: rgba(43, 92, 230, 0.2);
+      color: #7ba4ff;
+    }
+
+    .timer-mode-label.rest {
+      background: rgba(5, 150, 105, 0.2);
+      color: #34d399;
+    }
+
+    /* Circle timer */
+    .timer-circle-wrap {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 28px;
+    }
+
+    .timer-svg {
+      width: 200px;
+      height: 200px;
+      transform: rotate(-90deg);
+    }
+
+    .timer-bg-circle {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.05);
+      stroke-width: 8;
+    }
+
+    .timer-progress-circle {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition:
+        stroke-dashoffset 1s linear,
+        stroke 0.3s;
+    }
+
+    .timer-time-display {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-seconds {
+      font-size: 52px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .timer-seconds-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .timer-set-info {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .timer-set-info strong {
+      color: var(--text);
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .timer-btn {
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .timer-btn.primary {
+      background: var(--strength);
+      color: white;
+    }
+
+    .timer-btn.primary:hover {
+      opacity: 0.85;
+    }
+
+    .timer-btn.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .timer-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .timer-btn.danger {
+      background: rgba(232, 83, 26, 0.15);
+      color: #ff8c5a;
+      border: 1px solid rgba(232, 83, 26, 0.3);
+    }
+
+    .timer-complete {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .timer-complete-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .timer-complete-sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* Schedule */
+    .schedule-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-heading {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .tl-left {
+      width: 50px;
+      flex-shrink: 0;
+      text-align: right;
+      padding-top: 2px;
+    }
+
+    .tl-time {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tl-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 20px;
+      flex-shrink: 0;
+    }
+
+    .tl-dot-outer {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--dot-color, #444);
+      background: var(--bg);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tl-dot-outer.filled {
+      background: var(--dot-color, #444);
+    }
+
+    .tl-line {
+      width: 1px;
+      flex: 1;
+      background: var(--border);
+      min-height: 20px;
+    }
+
+    .tl-content {
+      flex: 1;
+      padding-bottom: 20px;
+    }
+
+    .tl-label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .tl-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Nutrition */
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .nut-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .nut-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .nut-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .nut-list {
+      list-style: none;
+    }
+
+    .nut-list li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+
+    .nut-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* Rest day */
+    .rest-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .rest-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+    }
+
+    .rest-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .rest-sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 400px;
+      margin: 0 auto 24px;
+    }
+
+    .rest-tips {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .rest-tip {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Daily done button */
+    .day-done-wrap {
+      margin-bottom: 24px;
+    }
+
+    .day-done-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 2px solid rgba(34, 197, 94, 0.25);
+      color: #4ade80;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .day-done-btn:hover {
+      background: rgba(34, 197, 94, 0.18);
+    }
+
+    .day-done-btn.marked {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: #22c55e;
+      color: #86efac;
+    }
+
+    .day-done-btn .check-icon {
+      font-size: 18px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 12px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 2000;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== STICK FIGURE ANIMATIONS ===== */
+    @keyframes pushup {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    @keyframes squat {
+
+      0%,
+      100% {
+        transform: scaleY(1) translateY(0);
+      }
+
+      50% {
+        transform: scaleY(0.78) translateY(10px);
+      }
+    }
+
+    @keyframes row {
+
+      0%,
+      100% {
+        transform: translateX(0px);
+      }
+
+      50% {
+        transform: translateX(8px);
+      }
+    }
+
+    @keyframes jump-rope {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-18px);
+      }
+    }
+
+    @keyframes plank {
+
+      0%,
+      100% {
+        transform: scaleX(1);
+      }
+
+      50% {
+        transform: scaleX(1.02);
+      }
+    }
+
+    @keyframes curl {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      50% {
+        transform: rotate(-30deg);
+      }
+    }
+
+    @keyframes lunge {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      50% {
+        transform: translateX(5px);
+      }
+    }
+
+    @keyframes burpee {
+      0% {
+        transform: scaleY(1) translateY(0);
+      }
+
+      30% {
+        transform: scaleY(0.55) translateY(20px);
+      }
+
+      60% {
+        transform: scaleY(0.55) translateY(20px);
+      }
+
+      90%,
+      100% {
+        transform: scaleY(1) translateY(0);
+      }
+    }
+
+    @keyframes mountain-climber {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px) translateY(-3px);
+      }
+
+      75% {
+        transform: translateX(5px) translateY(-3px);
+      }
+    }
+
+    @keyframes press {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes glute-bridge {
+
+      0%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      50% {
+        transform: scaleY(1.25) translateY(-6px);
+      }
+    }
+
+    @keyframes leg-raise {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+        transform-origin: top center;
+      }
+
+      50% {
+        transform: rotate(-40deg);
+        transform-origin: top center;
+      }
+    }
+
+    @keyframes calf-raise {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes rope-spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes vup {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      50% {
+        transform: rotate(-25deg);
+      }
+    }
+
+    @keyframes pullup {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-16px);
+      }
+    }
+
+    @keyframes deadlift {
+
+      0%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      50% {
+        transform: scaleY(0.82) translateY(8px);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nutrition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-header {
+        flex-direction: column;
+      }
+
+      .tab-type {
+        display: none;
+      }
+
+      .tab-badge {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 11px;
+      }
+
+      .timer-modal {
+        padding: 30px 24px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
 
-  <header>
-    <div class="header-pill">โปรแกรมออกกำลังกายส่วนบุคคล</div>
-    <h1>แผน<span>ออกกำลังกาย</span><br>รายสัปดาห์</h1>
-    <p class="header-sub">ออกกำลังกายที่บ้าน · ดัมเบล · เชือกกระโดด · บาร์วิดพื้น</p>
-  </header>
-
-  <!-- Stats -->
-  <div class="stats-row">
-    <div class="stat-box" style="--accent: var(--cardio)">
-      <div class="stat-label">น้ำหนักปัจจุบัน</div>
-      <div class="stat-val">82 <span class="stat-unit">กก.</span></div>
-      <div class="stat-note">เป้าหมาย 74–76 กก.</div>
-    </div>
-    <div class="stat-box" style="--accent: var(--strength)">
-      <div class="stat-label">ส่วนสูง</div>
-      <div class="stat-val">183 <span class="stat-unit">ซม.</span></div>
-    </div>
-    <div class="stat-box" style="--accent: var(--light)">
-      <div class="stat-label">BMI ปัจจุบัน</div>
-      <div class="stat-val" style="color: #F59E0B">24.5</div>
-      <div class="stat-note">ขอบบนของปกติ</div>
-    </div>
-    <div class="stat-box" style="--accent: var(--rest)">
-      <div class="stat-label">เป้าหมาย BMI</div>
-      <div class="stat-val" style="color: #34D399">22–23</div>
-      <div class="stat-note">สมส่วนเหมาะสม</div>
+  <!-- Timer Modal -->
+  <div class="timer-overlay" id="timerOverlay">
+    <div class="timer-modal">
+      <button class="timer-close" onclick="closeTimer()">✕</button>
+      <div id="timerContent"><!-- filled by JS --></div>
     </div>
   </div>
 
-  <!-- Day Tabs -->
-  <div class="tabs-wrapper">
-    <div class="tabs">
-      <div class="tab active" style="--tab-color: var(--strength)" data-panel="mon" onclick="switchTab(this,'mon')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--strength)">จ</div>
-        <div class="tab-day">จันทร์</div>
-        <div class="tab-type">Strength</div>
+  <div class="container">
+    <header>
+      <div class="header-pill">โปรแกรมออกกำลังกายส่วนบุคคล</div>
+      <h1>แผน<span>ออกกำลังกาย</span><br />รายสัปดาห์</h1>
+      <p class="header-sub">
+        ออกกำลังกายที่บ้าน · ดัมเบล · เชือกกระโดด · บาร์วิดพื้น
+      </p>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box" style="--accent: var(--cardio)">
+        <div class="stat-label">น้ำหนักปัจจุบัน</div>
+        <div class="stat-val">82 <span class="stat-unit">กก.</span></div>
+        <div class="stat-note">เป้าหมาย 74–76 กก.</div>
+        <div class="progress-stat">
+          <div class="progress-bar-bg" style="--accent: var(--cardio)">
+            <div class="progress-bar-fill" style="width: 25%; background: var(--cardio)"></div>
+          </div>
+        </div>
       </div>
-      <div class="tab" style="--tab-color: var(--cardio)" data-panel="tue" onclick="switchTab(this,'tue')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--cardio)">อ</div>
-        <div class="tab-day">อังคาร</div>
-        <div class="tab-type">Cardio</div>
+      <div class="stat-box" style="--accent: var(--strength)">
+        <div class="stat-label">ส่วนสูง</div>
+        <div class="stat-val">183 <span class="stat-unit">ซม.</span></div>
       </div>
-      <div class="tab" style="--tab-color: var(--fullbody)" data-panel="wed" onclick="switchTab(this,'wed')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--fullbody)">พ</div>
-        <div class="tab-day">พุธ</div>
-        <div class="tab-type">Lower</div>
+      <div class="stat-box" style="--accent: var(--light)">
+        <div class="stat-label">BMI ปัจจุบัน</div>
+        <div class="stat-val" style="color: #f59e0b">24.5</div>
+        <div class="stat-note">ขอบบนของปกติ</div>
       </div>
-      <div class="tab" style="--tab-color: var(--rest)" data-panel="thu" onclick="switchTab(this,'thu')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--rest)">พฤ</div>
-        <div class="tab-day">พฤหัส</div>
-        <div class="tab-type">Rest</div>
-      </div>
-      <div class="tab" style="--tab-color: var(--fullbody)" data-panel="fri" onclick="switchTab(this,'fri')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--fullbody)">ศ</div>
-        <div class="tab-day">ศุกร์</div>
-        <div class="tab-type">Full Body</div>
-      </div>
-      <div class="tab" style="--tab-color: var(--cardio)" data-panel="sat" onclick="switchTab(this,'sat')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--cardio)">ส</div>
-        <div class="tab-day">เสาร์</div>
-        <div class="tab-type">HIIT</div>
-      </div>
-      <div class="tab" style="--tab-color: var(--rest)" data-panel="sun" onclick="switchTab(this,'sun')">
-        <div class="tab-bar"></div>
-        <div class="tab-badge" style="background:var(--rest)">อา</div>
-        <div class="tab-day">อาทิตย์</div>
-        <div class="tab-type">Rest</div>
+      <div class="stat-box" style="--accent: var(--rest)">
+        <div class="stat-label">เป้าหมาย BMI</div>
+        <div class="stat-val" style="color: #34d399">22–23</div>
+        <div class="stat-note">สมส่วนเหมาะสม</div>
       </div>
     </div>
-  </div>
 
-  <!-- ===== MONDAY ===== -->
-  <div class="panel active" id="panel-mon">
-    <div class="panel-header">
-      <div class="panel-title-area">
-        <div class="type-badge" style="background:rgba(43,92,230,0.15); color:#7BA4FF; border:1px solid rgba(43,92,230,0.3)">
-          💪 Upper Body Strength
-        </div>
-        <div class="panel-title">วันจันทร์</div>
-        <div class="panel-sub">เน้นกล้ามเนื้อส่วนบน — อก · หลัง · ไหล่ · แขน</div>
-      </div>
-      <div class="panel-meta">
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#7BA4FF">35</div>
-          <div class="meta-chip-label">นาที</div>
-        </div>
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#7BA4FF">5</div>
-          <div class="meta-chip-label">ท่า</div>
+    <!-- Weekly progress -->
+    <div class="weekly-summary">
+      <span class="ws-title">สัปดาห์นี้</span>
+      <div class="ws-days" id="weekDots"></div>
+      <div class="ws-streak">
+        <div>
+          <div class="ws-streak-val" id="streakVal">0</div>
+          <div class="ws-streak-label">วันติดต่อกัน 🔥</div>
         </div>
       </div>
     </div>
 
-    <div class="exercises-grid">
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
-        <div class="ex-num" style="--accent-color:var(--strength)">01 — อก</div>
-        <div class="ex-name">Push-up</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12–15</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+    <!-- Day Tabs -->
+    <div class="tabs-wrapper">
+      <div class="tabs">
+        <div class="tab active" style="--tab-color: var(--strength)" data-panel="mon" onclick="switchTab(this, 'mon')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--strength)">จ</div>
+          <div class="tab-day">จันทร์</div>
+          <div class="tab-type">Strength</div>
+          <div class="tab-done-check" id="check-mon">✓</div>
         </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
-        <div class="ex-num" style="--accent-color:var(--strength)">02 — หลัง</div>
-        <div class="ex-name">Dumbbell Row</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        <div class="tab" style="--tab-color: var(--cardio)" data-panel="tue" onclick="switchTab(this, 'tue')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--cardio)">อ</div>
+          <div class="tab-day">อังคาร</div>
+          <div class="tab-type">Cardio</div>
+          <div class="tab-done-check" id="check-tue">✓</div>
         </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
-        <div class="ex-num" style="--accent-color:var(--strength)">03 — ไหล่</div>
-        <div class="ex-name">Overhead Press</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+        <div class="tab" style="--tab-color: var(--fullbody)" data-panel="wed" onclick="switchTab(this, 'wed')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--fullbody)">พ</div>
+          <div class="tab-day">พุธ</div>
+          <div class="tab-type">Lower</div>
+          <div class="tab-done-check" id="check-wed">✓</div>
         </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
-        <div class="ex-num" style="--accent-color:var(--strength)">04 — หลังส่วนบน</div>
-        <div class="ex-name">Pull-up / Chin-up (บาร์วิดพื้น)</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>8–10</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>90</strong> วิ</div>
+        <div class="tab" style="--tab-color: var(--rest)" data-panel="thu" onclick="switchTab(this, 'thu')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--rest)">พฤ</div>
+          <div class="tab-day">พฤหัส</div>
+          <div class="tab-type">Rest</div>
+          <div class="tab-done-check" id="check-thu">✓</div>
         </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--strength)"></div>
-        <div class="ex-num" style="--accent-color:var(--strength)">05 — แขน</div>
-        <div class="ex-name">Bicep Curl</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>2</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+        <div class="tab" style="--tab-color: var(--fullbody)" data-panel="fri" onclick="switchTab(this, 'fri')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--fullbody)">ศ</div>
+          <div class="tab-day">ศุกร์</div>
+          <div class="tab-type">Full Body</div>
+          <div class="tab-done-check" id="check-fri">✓</div>
+        </div>
+        <div class="tab" style="--tab-color: var(--cardio)" data-panel="sat" onclick="switchTab(this, 'sat')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--cardio)">ส</div>
+          <div class="tab-day">เสาร์</div>
+          <div class="tab-type">HIIT</div>
+          <div class="tab-done-check" id="check-sat">✓</div>
+        </div>
+        <div class="tab" style="--tab-color: var(--rest)" data-panel="sun" onclick="switchTab(this, 'sun')">
+          <div class="tab-bar"></div>
+          <div class="tab-badge" style="background: var(--rest)">อา</div>
+          <div class="tab-day">อาทิตย์</div>
+          <div class="tab-type">Rest</div>
+          <div class="tab-done-check" id="check-sun">✓</div>
         </div>
       </div>
     </div>
 
+    <!-- ===== MONDAY ===== -->
+    <div class="panel active" id="panel-mon">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <div class="type-badge" style="
+                background: rgba(43, 92, 230, 0.15);
+                color: #7ba4ff;
+                border: 1px solid rgba(43, 92, 230, 0.3);
+              ">
+            💪 Upper Body Strength
+          </div>
+          <div class="panel-title">วันจันทร์</div>
+          <div class="panel-sub">
+            เน้นกล้ามเนื้อส่วนบน — อก · หลัง · ไหล่ · แขน
+          </div>
+        </div>
+        <div class="panel-meta">
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #7ba4ff">35</div>
+            <div class="meta-chip-label">นาที</div>
+          </div>
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #7ba4ff">5</div>
+            <div class="meta-chip-label">ท่า</div>
+          </div>
+        </div>
+      </div>
+      <div class="exercises-grid">
+        <!-- Push-up -->
+        <div class="ex-card" id="ex-mon-0">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--strength)"></div>
+            <div class="ex-num" style="color: var(--strength)">01 — อก</div>
+            <div class="ex-name">Push-up</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12–15</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-mon-0"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('mon', '0', 'Push-up', 3, 60)"
+              style="--accent-color: var(--strength)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Dumbbell Row -->
+        <div class="ex-card" id="ex-mon-1">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--strength)"></div>
+            <div class="ex-num" style="color: var(--strength)">02 — หลัง</div>
+            <div class="ex-name">Dumbbell Row</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-mon-1"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('mon', '1', 'Dumbbell Row', 3, 60)"
+              style="--accent-color: var(--strength)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Overhead Press -->
+        <div class="ex-card" id="ex-mon-2">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--strength)"></div>
+            <div class="ex-num" style="color: var(--strength)">03 — ไหล่</div>
+            <div class="ex-name">Overhead Press</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-mon-2"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('mon', '2', 'Overhead Press', 3, 75)"
+              style="--accent-color: var(--strength)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Pull-up -->
+        <div class="ex-card" id="ex-mon-3">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--strength)"></div>
+            <div class="ex-num" style="color: var(--strength)">
+              04 — หลังส่วนบน
+            </div>
+            <div class="ex-name">Pull-up / Chin-up</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>8–10</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>90</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-mon-3"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('mon', '3', 'Pull-up', 3, 90)"
+              style="--accent-color: var(--strength)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Bicep Curl -->
+        <div class="ex-card" id="ex-mon-4">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--strength)"></div>
+            <div class="ex-num" style="color: var(--strength)">05 — แขน</div>
+            <div class="ex-name">Bicep Curl</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>2</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-mon-4"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('mon', '4', 'Bicep Curl', 2, 60)"
+              style="--accent-color: var(--strength)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-mon" onclick="markDayDone('mon')">
+          <span class="check-icon">☐</span> บันทึกว่าทำวันจันทร์เสร็จแล้ว
+        </button>
+      </div>
+      <div class="schedule-section">
+        <div class="section-heading">ตารางเวลาวันนี้</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">05:30</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: var(--strength)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">⚡ ออกกำลังกาย 35 นาที</div>
+              <div class="tl-desc">Upper body · ดัมเบล + บาร์วิดพื้น</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">06:10</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: #34d399"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div>
+              <div class="tl-desc">
+                ไข่ 2–3 ฟอง · ข้าวกล้องหรือขนมปังโฮลวีต · กล้วย
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">06:30</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer" style="--dot-color: var(--muted)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">🚌 ขึ้นรถรับส่ง</div>
+              <div class="tl-desc">พักผ่อน / ฟังพอดแคสต์</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">12:00</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: #34d399"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">🥗 อาหารกลางวัน</div>
+              <div class="tl-desc">โปรตีน + ผัก + ข้าว ½ ถ้วย</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">22:30</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: #7b8cff"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">😴 นอน</div>
+              <div class="tl-desc">7 ชั่วโมง = ตื่น 05:30</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TUESDAY ===== -->
+    <div class="panel" id="panel-tue">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <div class="type-badge" style="
+                background: rgba(232, 83, 26, 0.15);
+                color: #ff8c5a;
+                border: 1px solid rgba(232, 83, 26, 0.3);
+              ">
+            🔥 Cardio + Core
+          </div>
+          <div class="panel-title">วันอังคาร</div>
+          <div class="panel-sub">เผาผลาญไขมัน — เชือกกระโดด HIIT + core</div>
+        </div>
+        <div class="panel-meta">
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #ff8c5a">30</div>
+            <div class="meta-chip-label">นาที</div>
+          </div>
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #ff8c5a">5</div>
+            <div class="meta-chip-label">ท่า</div>
+          </div>
+        </div>
+      </div>
+      <div class="exercises-grid">
+        <!-- Jump Rope HIIT -->
+        <div class="ex-card" id="ex-tue-0">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">
+              01 — คาร์ดิโอ
+            </div>
+            <div class="ex-name">เชือกกระโดด HIIT</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill">กระโดด <strong>30</strong> วิ</div>
+              <div class="ex-set-pill">พัก <strong>15</strong> วิ</div>
+              <div class="ex-set-pill"><strong>10</strong> รอบ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">รอบ</span>
+              <div class="set-dots" id="sets-tue-0"></div>
+            </div>
+            <button class="start-btn" onclick="
+                  startExercise('tue', '0', 'Jump Rope HIIT', 10, 15, 30)
+                " style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Burpee -->
+        <div class="ex-card" id="ex-tue-1">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">
+              02 — ทั้งตัว
+            </div>
+            <div class="ex-name">Burpee</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-tue-1"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('tue', '1', 'Burpee', 3, 60)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Mountain Climbers -->
+        <div class="ex-card" id="ex-tue-2">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">03 — core</div>
+            <div class="ex-name">Mountain Climbers</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>20</strong> ครั้ง/ข้าง</div>
+              <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-tue-2"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('tue', '2', 'Mountain Climbers', 3, 45)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Plank -->
+        <div class="ex-card" id="ex-tue-3">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">04 — core</div>
+            <div class="ex-name">Plank</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>45</strong> วินาที</div>
+              <div class="ex-set-pill">พัก <strong>30</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-tue-3"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('tue', '3', 'Plank', 3, 30, 45)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Leg Raises -->
+        <div class="ex-card" id="ex-tue-4">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">05 — core</div>
+            <div class="ex-name">Leg Raises</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-tue-4"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('tue', '4', 'Leg Raises', 3, 45)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-tue" onclick="markDayDone('tue')">
+          <span class="check-icon">☐</span> บันทึกว่าทำวันอังคารเสร็จแล้ว
+        </button>
+      </div>
+      <div class="schedule-section">
+        <div class="section-heading">ตารางเวลาวันนี้</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">05:30</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: var(--cardio)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">🔥 HIIT 30 นาที</div>
+              <div class="tl-desc">เชือกกระโดด + core circuit</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">06:05</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: #34d399"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div>
+              <div class="tl-desc">โปรตีนสูง — ไข่ + กรีกโยเกิร์ต</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-time">22:30</div>
+            </div>
+            <div class="tl-center">
+              <div class="tl-dot-outer filled" style="--dot-color: #7b8cff"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-label">😴 นอน</div>
+              <div class="tl-desc">ร่างกายซ่อมแซมกล้ามเนื้อระหว่างหลับ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== WEDNESDAY ===== -->
+    <div class="panel" id="panel-wed">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <div class="type-badge" style="
+                background: rgba(124, 58, 237, 0.15);
+                color: #b48eff;
+                border: 1px solid rgba(124, 58, 237, 0.3);
+              ">
+            🦵 Lower Body Strength
+          </div>
+          <div class="panel-title">วันพุธ</div>
+          <div class="panel-sub">
+            เน้นกล้ามเนื้อส่วนล่าง — ขา · สะโพก · น่อง
+          </div>
+        </div>
+        <div class="panel-meta">
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #b48eff">40</div>
+            <div class="meta-chip-label">นาที</div>
+          </div>
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #b48eff">5</div>
+            <div class="meta-chip-label">ท่า</div>
+          </div>
+        </div>
+      </div>
+      <div class="exercises-grid">
+        <!-- Goblet Squat -->
+        <div class="ex-card" id="ex-wed-0">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              01 — ต้นขา
+            </div>
+            <div class="ex-name">Goblet Squat</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-wed-0"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('wed', '0', 'Goblet Squat', 3, 75)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Reverse Lunge -->
+        <div class="ex-card" id="ex-wed-1">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              02 — ต้นขา
+            </div>
+            <div class="ex-name">Reverse Lunge</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-wed-1"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('wed', '1', 'Reverse Lunge', 3, 60)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Romanian Deadlift -->
+        <div class="ex-card" id="ex-wed-2">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              03 — หลังขา
+            </div>
+            <div class="ex-name">Romanian Deadlift</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-wed-2"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('wed', '2', 'Romanian Deadlift', 3, 75)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Glute Bridge -->
+        <div class="ex-card" id="ex-wed-3">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              04 — สะโพก
+            </div>
+            <div class="ex-name">Glute Bridge</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-wed-3"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('wed', '3', 'Glute Bridge', 3, 45)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Calf Raise -->
+        <div class="ex-card" id="ex-wed-4">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">05 — น่อง</div>
+            <div class="ex-name">Calf Raise</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>20</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-wed-4"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('wed', '4', 'Calf Raise', 3, 45)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-wed" onclick="markDayDone('wed')">
+          <span class="check-icon">☐</span> บันทึกว่าทำวันพุธเสร็จแล้ว
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== THURSDAY (REST) ===== -->
+    <div class="panel" id="panel-thu">
+      <div class="rest-card">
+        <div class="rest-icon">🌿</div>
+        <div class="rest-title">วันพฤหัส — วันพักเบา</div>
+        <div class="rest-sub">
+          ร่างกายต้องการเวลาซ่อมแซมกล้ามเนื้อ<br />การพักคือส่วนสำคัญของการพัฒนา
+          ไม่ใช่การหยุด
+        </div>
+        <div class="rest-tips">
+          <div class="rest-tip">🚶 เดิน 15–20 นาที</div>
+          <div class="rest-tip">🧘 ยืดกล้ามเนื้อ</div>
+          <div class="rest-tip">💧 ดื่มน้ำ 2.5 ลิตร</div>
+          <div class="rest-tip">😴 นอนหลับให้ครบ</div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-thu" onclick="markDayDone('thu')">
+          <span class="check-icon">☐</span> บันทึกว่าพักผ่อนวันพฤหัสแล้ว
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== FRIDAY ===== -->
+    <div class="panel" id="panel-fri">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <div class="type-badge" style="
+                background: rgba(124, 58, 237, 0.15);
+                color: #b48eff;
+                border: 1px solid rgba(124, 58, 237, 0.3);
+              ">
+            ⚡ Full Body Circuit
+          </div>
+          <div class="panel-title">วันศุกร์</div>
+          <div class="panel-sub">
+            เต็มสัปดาห์ปิดด้วย circuit training ทั้งร่างกาย
+          </div>
+        </div>
+        <div class="panel-meta">
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #b48eff">40</div>
+            <div class="meta-chip-label">นาที</div>
+          </div>
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #b48eff">6</div>
+            <div class="meta-chip-label">ท่า</div>
+          </div>
+        </div>
+      </div>
+      <div class="exercises-grid">
+        <!-- Squat to Press -->
+        <div class="ex-card" id="ex-fri-0">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              01 — ขา + ไหล่
+            </div>
+            <div class="ex-name">Squat to Press</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-fri-0"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('fri', '0', 'Squat to Press', 3, 60)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Push-up (Fri) -->
+        <div class="ex-card" id="ex-fri-1">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">02 — อก</div>
+            <div class="ex-name">Push-up</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-fri-1"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('fri', '1', 'Push-up', 3, 45)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Jump Squat -->
+        <div class="ex-card" id="ex-fri-2">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              03 — ขา + cardio
+            </div>
+            <div class="ex-name">Jump Squat</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-fri-2"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('fri', '2', 'Jump Squat', 3, 60)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Dumbbell Row Fri -->
+        <div class="ex-card" id="ex-fri-3">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">04 — หลัง</div>
+            <div class="ex-name">Dumbbell Row</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-fri-3"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('fri', '3', 'Dumbbell Row', 3, 60)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Plank Rotation -->
+        <div class="ex-card" id="ex-fri-4">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">05 — core</div>
+            <div class="ex-name">Plank Rotation</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>30</strong> วินาที</div>
+              <div class="ex-set-pill">พัก <strong>30</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-fri-4"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('fri', '4', 'Plank Rotation', 3, 30, 30)"
+              style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Jump Rope cooldown -->
+        <div class="ex-card" id="ex-fri-5">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--fullbody)"></div>
+            <div class="ex-num" style="color: var(--fullbody)">
+              06 — cool-down
+            </div>
+            <div class="ex-name">เชือกกระโดด (เบาๆ)</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>2</strong> นาที</div>
+              <div class="ex-set-pill">ความเร็วปานกลาง</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">รอบ</span>
+              <div class="set-dots" id="sets-fri-5"></div>
+            </div>
+            <button class="start-btn" onclick="
+                  startExercise('fri', '5', 'Cool-down Rope', 2, 30, 120)
+                " style="--accent-color: var(--fullbody)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-fri" onclick="markDayDone('fri')">
+          <span class="check-icon">☐</span> บันทึกว่าทำวันศุกร์เสร็จแล้ว
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== SATURDAY ===== -->
+    <div class="panel" id="panel-sat">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <div class="type-badge" style="
+                background: rgba(232, 83, 26, 0.15);
+                color: #ff8c5a;
+                border: 1px solid rgba(232, 83, 26, 0.3);
+              ">
+            🔥 HIIT คาร์ดิโอ
+          </div>
+          <div class="panel-title">วันเสาร์</div>
+          <div class="panel-sub">วันหยุด — เผาพลังงานเต็มที่</div>
+        </div>
+        <div class="panel-meta">
+          <div class="meta-chip">
+            <div class="meta-chip-val" style="color: #ff8c5a">40</div>
+            <div class="meta-chip-label">นาที</div>
+          </div>
+        </div>
+      </div>
+      <div class="exercises-grid">
+        <!-- Burpee Tuck Jump -->
+        <div class="ex-card" id="ex-sat-0">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">
+              01 — ทั้งตัว
+            </div>
+            <div class="ex-name">Burpee + Tuck Jump</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>4</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>8</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-sat-0"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('sat', '0', 'Burpee + Tuck Jump', 4, 60)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- Sprint Rope -->
+        <div class="ex-card" id="ex-sat-1">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">
+              02 — HIIT Sprint
+            </div>
+            <div class="ex-name">เชือกกระโดด Sprint</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill">สปรินต์ <strong>40</strong> วิ</div>
+              <div class="ex-set-pill">พัก <strong>20</strong> วิ</div>
+              <div class="ex-set-pill"><strong>10</strong> รอบ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">รอบ</span>
+              <div class="set-dots" id="sets-sat-1"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('sat', '1', 'Sprint Rope', 10, 20, 40)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+        <!-- V-ups -->
+        <div class="ex-card" id="ex-sat-2">
+          <div class="ex-card-body">
+            <div class="ex-card-accent" style="--accent-color: var(--cardio)"></div>
+            <div class="ex-num" style="color: var(--cardio)">03 — core</div>
+            <div class="ex-name">V-ups</div>
+            <div class="ex-sets">
+              <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
+              <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
+              <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
+            </div>
+            <div class="set-tracker">
+              <span class="set-tracker-label">เซ็ต</span>
+              <div class="set-dots" id="sets-sat-2"></div>
+            </div>
+            <button class="start-btn" onclick="startExercise('sat', '2', 'V-ups', 3, 45)"
+              style="--accent-color: var(--cardio)">
+              ▶ เริ่มจับเวลา
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-sat" onclick="markDayDone('sat')">
+          <span class="check-icon">☐</span> บันทึกว่าทำวันเสาร์เสร็จแล้ว
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== SUNDAY (REST) ===== -->
+    <div class="panel" id="panel-sun">
+      <div class="rest-card">
+        <div class="rest-icon">☀️</div>
+        <div class="rest-title">วันอาทิตย์ — วันพักผ่อนเต็ม</div>
+        <div class="rest-sub">
+          สัปดาห์ใหม่เริ่มพรุ่งนี้ วันนี้ให้ร่างกายและจิตใจได้ชาร์จพลังงาน<br />ไม่ต้องออกกำลังกาย
+          ยืดเบาๆ ได้ถ้าอยาก
+        </div>
+        <div class="rest-tips">
+          <div class="rest-tip">🛁 พักผ่อนเต็มที่</div>
+          <div class="rest-tip">🧘 โยคะเบาๆ ได้</div>
+          <div class="rest-tip">🥗 กินดี มีสุขภาพ</div>
+          <div class="rest-tip">🌙 นอนหลับให้ครบ</div>
+        </div>
+      </div>
+      <div class="day-done-wrap">
+        <button class="day-done-btn" id="done-sun" onclick="markDayDone('sun')">
+          <span class="check-icon">☐</span> บันทึกว่าพักผ่อนวันอาทิตย์แล้ว
+        </button>
+      </div>
+    </div>
+
+    <!-- Nutrition -->
     <div class="schedule-section">
-      <div class="section-heading">ตารางเวลาวันนี้</div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">05:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--strength)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">⚡ ออกกำลังกาย 35 นาที</div><div class="tl-desc">Upper body · ดัมเบล + บาร์วิดพื้น</div></div>
+      <div class="section-heading">แนวทางการกิน</div>
+      <div class="nutrition-grid">
+        <div class="nut-card">
+          <div class="nut-icon">🌅</div>
+          <div class="nut-title">มื้อเช้า (ก่อน 06:30)</div>
+          <ul class="nut-list">
+            <li>ไข่ต้ม / ไข่ดาว 2–3 ฟอง</li>
+            <li>ข้าวกล้อง / ขนมปังโฮลวีต</li>
+            <li>กล้วย 1 ลูก</li>
+            <li>น้ำเปล่า 2 แก้ว</li>
+          </ul>
         </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:10</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div><div class="tl-desc">ไข่ 2–3 ฟอง · ข้าวกล้องหรือขนมปังโฮลวีต · กล้วย</div></div>
+        <div class="nut-card">
+          <div class="nut-icon">☀️</div>
+          <div class="nut-title">มื้อกลางวัน</div>
+          <ul class="nut-list">
+            <li>ไก่ / ปลา / เต้าหู้</li>
+            <li>ผัก 1–2 อย่าง</li>
+            <li>ข้าว ½–¾ ถ้วย</li>
+            <li>หลีกเลี่ยงน้ำหวาน</li>
+          </ul>
         </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer" style="--dot-color:var(--muted)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🚌 ขึ้นรถรับส่ง</div><div class="tl-desc">พักผ่อน / ฟังพอดแคสต์</div></div>
+        <div class="nut-card">
+          <div class="nut-icon">🌙</div>
+          <div class="nut-title">มื้อเย็น (ก่อน 19:00)</div>
+          <ul class="nut-list">
+            <li>ปลา / ไก่ต้ม (โปรตีนสูง)</li>
+            <li>ผักนึ่ง / ต้ม 2 ถ้วย</li>
+            <li>ลดแป้ง / งดข้าว</li>
+            <li>หยุดกินหลัง 21:30</li>
+          </ul>
         </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">12:00</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🥗 อาหารกลางวัน</div><div class="tl-desc">โปรตีน + ผัก + ข้าว ½ ถ้วย</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">18:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🍽️ อาหารเย็น (มื้อเบา)</div><div class="tl-desc">โปรตีน + ผักต้ม งดแป้งตอนเย็น</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">22:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
-          <div class="tl-content"><div class="tl-label">😴 นอน</div><div class="tl-desc">7 ชั่วโมง = ตื่น 05:30</div></div>
-        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background: var(--strength)"></div>
+        Strength — กล้ามเนื้อ
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: var(--cardio)"></div>
+        Cardio — คาร์ดิโอ
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: var(--fullbody)"></div>
+        Full Body — เต็มตัว
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: var(--rest)"></div>
+        Rest — พักฟื้น
       </div>
     </div>
   </div>
 
-  <!-- ===== TUESDAY ===== -->
-  <div class="panel" id="panel-tue">
-    <div class="panel-header">
-      <div class="panel-title-area">
-        <div class="type-badge" style="background:rgba(232,83,26,0.15); color:#FF8C5A; border:1px solid rgba(232,83,26,0.3)">
-          🔥 Cardio + Core
-        </div>
-        <div class="panel-title">วันอังคาร</div>
-        <div class="panel-sub">เผาผลาญไขมัน — เชือกกระโดด HIIT + core</div>
-      </div>
-      <div class="panel-meta">
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#FF8C5A">30</div>
-          <div class="meta-chip-label">นาที</div>
-        </div>
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#FF8C5A">5</div>
-          <div class="meta-chip-label">ท่า</div>
-        </div>
+  <script>
+    // ===== localStorage keys =====
+    const STORAGE_KEY = "fitness_v2";
+
+    function loadData() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // ===== Tab switching =====
+    function switchTab(el, panelId) {
+      document
+        .querySelectorAll(".tab")
+        .forEach((t) => t.classList.remove("active"));
+      document
+        .querySelectorAll(".panel")
+        .forEach((p) => p.classList.remove("active"));
+      el.classList.add("active");
+      document.getElementById("panel-" + panelId).classList.add("active");
+    }
+
+    // ===== Set tracker =====
+    const SET_CONFIG = {
+      mon: [3, 3, 3, 3, 2],
+      tue: [10, 3, 3, 3, 3],
+      wed: [3, 3, 3, 3, 3],
+      fri: [3, 3, 3, 3, 3, 2],
+      sat: [4, 10, 3],
+    };
+
+    function buildSetDots() {
+      const data = loadData();
+      const days = ["mon", "tue", "wed", "fri", "sat"];
+      days.forEach((day) => {
+        const counts = SET_CONFIG[day];
+        if (!counts) return;
+        counts.forEach((total, idx) => {
+          const container = document.getElementById(`sets-${day}-${idx}`);
+          if (!container) return;
+          container.innerHTML = "";
+          const doneSets = data[`sets-${day}-${idx}`] || 0;
+          for (let i = 0; i < total; i++) {
+            const dot = document.createElement("div");
+            dot.className = "set-dot" + (i < doneSets ? " done" : "");
+            dot.style.setProperty(
+              "--accent-color",
+              getComputedStyle(document.documentElement).getPropertyValue(
+                `--${getDayColor(day)}`,
+              ),
+            );
+            dot.onclick = () => toggleSet(day, idx, i, total);
+            container.appendChild(dot);
+          }
+        });
+      });
+    }
+
+    function getDayColor(day) {
+      const map = {
+        mon: "strength",
+        tue: "cardio",
+        wed: "fullbody",
+        fri: "fullbody",
+        sat: "cardio",
+      };
+      return map[day] || "strength";
+    }
+
+    function toggleSet(day, exIdx, setIdx, total) {
+      const data = loadData();
+      const key = `sets-${day}-${exIdx}`;
+      const current = data[key] || 0;
+      // clicking on done set: uncheck all from that set onwards; clicking undone: check up to that set
+      const newVal = setIdx < current ? setIdx : setIdx + 1;
+      data[key] = Math.min(newVal, total);
+      saveData(data);
+      buildSetDots();
+      if (data[key] === total) showToast(`✅ เสร็จครบ ${total} เซ็ต!`);
+    }
+
+    // ===== Day done =====
+    function markDayDone(day) {
+      const data = loadData();
+      const today = new Date().toDateString();
+      data[`done-${day}`] = data[`done-${day}`] === today ? null : today;
+      saveData(data);
+      renderDoneButtons();
+      renderWeekDots();
+      renderTabChecks();
+      const isDone = data[`done-${day}`] === today;
+      showToast(
+        isDone ? "🎉 บันทึกแล้ว! ยอดเยี่ยมมาก!" : "↩ ยกเลิกการบันทึก",
+      );
+    }
+
+    function renderDoneButtons() {
+      const data = loadData();
+      const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+      days.forEach((day) => {
+        const btn = document.getElementById(`done-${day}`);
+        if (!btn) return;
+        const today = new Date().toDateString();
+        const isDone = data[`done-${day}`] === today;
+        btn.classList.toggle("marked", isDone);
+        btn.querySelector(".check-icon").textContent = isDone ? "✅" : "☐";
+        const labels = {
+          mon: "จันทร์",
+          tue: "อังคาร",
+          wed: "พุธ",
+          thu: "พฤหัส",
+          fri: "ศุกร์",
+          sat: "เสาร์",
+          sun: "อาทิตย์",
+        };
+        const restDays = ["thu", "sun"];
+        btn.childNodes[1].textContent = isDone
+          ? ` บันทึกแล้ว — วัน${labels[day]} ✓`
+          : restDays.includes(day)
+            ? ` บันทึกว่าพักผ่อนวัน${labels[day]}แล้ว`
+            : ` บันทึกว่าทำวัน${labels[day]}เสร็จแล้ว`;
+      });
+    }
+
+    function renderTabChecks() {
+      const data = loadData();
+      const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+      days.forEach((day) => {
+        const check = document.getElementById(`check-${day}`);
+        if (!check) return;
+        const today = new Date().toDateString();
+        check.classList.toggle("show", data[`done-${day}`] === today);
+      });
+    }
+
+    // ===== Weekly dots =====
+    const dayOrder = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    const dayLabels = ["จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"];
+    const dayColors = {
+      mon: "#2B5CE6",
+      tue: "#E8531A",
+      wed: "#7C3AED",
+      thu: "#059669",
+      fri: "#7C3AED",
+      sat: "#E8531A",
+      sun: "#059669",
+    };
+
+    function renderWeekDots() {
+      const data = loadData();
+      const today = new Date().toDateString();
+      const container = document.getElementById("weekDots");
+      container.innerHTML = "";
+      let streak = 0;
+
+      dayOrder.forEach((day, i) => {
+        const isDone = data[`done-${day}`] === today;
+        const dot = document.createElement("div");
+        dot.className = "ws-day-dot" + (isDone ? " done" : "");
+        dot.style.setProperty("--color", dayColors[day]);
+        if (!isDone) dot.innerHTML = `<span>${dayLabels[i]}</span>`;
+        container.appendChild(dot);
+      });
+
+      // Calculate streak from localStorage across dates
+      let d = new Date();
+      let s = 0;
+      for (let i = 0; i < 30; i++) {
+        const dateStr = d.toDateString();
+        const dayKey = dayOrder[d.getDay() === 0 ? 6 : d.getDay() - 1];
+        if (data[`done-${dayKey}`] === dateStr) {
+          s++;
+          d.setDate(d.getDate() - 1);
+        } else break;
+      }
+      document.getElementById("streakVal").textContent = s;
+    }
+
+    // ===== Today indicator =====
+    function markToday() {
+      const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+      const today = days[new Date().getDay()];
+      const todayTab = document.querySelector(`[data-panel="${today}"]`);
+      if (todayTab) {
+        const dot = document.createElement("div");
+        dot.className = "today-dot";
+        todayTab.appendChild(dot);
+      }
+    }
+
+    // ===== Toast =====
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    // ===== TIMER =====
+    let timerInterval = null;
+    let timerState = null;
+
+    const RADIUS = 88;
+    const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+    function startExercise(day, exIdx, name, totalSets, restSecs, workSecs) {
+      timerState = {
+        day,
+        exIdx,
+        name,
+        totalSets,
+        restSecs,
+        workSecs: workSecs || null,
+        currentSet: 1,
+        phase: workSecs ? "work" : "rest",
+        timeLeft: workSecs || restSecs,
+        totalTime: workSecs || restSecs,
+        running: false,
+      };
+      renderTimerModal();
+      document.getElementById("timerOverlay").classList.add("show");
+    }
+
+    function renderTimerModal() {
+      const s = timerState;
+      if (!s) return;
+      const isWork = s.phase === "work";
+      const color = isWork ? "#7BA4FF" : "#34D399";
+      const offset = CIRCUMFERENCE * (1 - s.timeLeft / s.totalTime);
+
+      document.getElementById("timerContent").innerHTML = `
+    <div class="timer-exercise-name">${s.name}</div>
+    <div class="timer-mode-label ${isWork ? "work" : "rest"}">${isWork ? "⚡ ออกกำลังกาย" : "😮‍💨 พักระหว่างเซ็ต"}</div>
+    <div class="timer-circle-wrap">
+      <svg class="timer-svg" viewBox="0 0 200 200">
+        <circle class="timer-bg-circle" cx="100" cy="100" r="${RADIUS}"/>
+        <circle class="timer-progress-circle" id="timerCircle"
+          cx="100" cy="100" r="${RADIUS}"
+          stroke="${color}"
+          stroke-dasharray="${CIRCUMFERENCE}"
+          stroke-dashoffset="${offset}"/>
+      </svg>
+      <div class="timer-time-display">
+        <div class="timer-seconds" id="timerSeconds" style="color:${color}">${s.timeLeft}</div>
+        <div class="timer-seconds-label">วินาที</div>
       </div>
     </div>
-
-    <div class="exercises-grid">
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">01 — คาร์ดิโอ</div>
-        <div class="ex-name">เชือกกระโดด HIIT</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill">กระโดด <strong>30</strong> วิ</div>
-          <div class="ex-set-pill">พัก <strong>15</strong> วิ</div>
-          <div class="ex-set-pill"><strong>10–15</strong> รอบ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">02 — ทั้งตัว</div>
-        <div class="ex-name">Burpee</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">03 — core</div>
-        <div class="ex-name">Mountain Climbers</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>20</strong> ครั้ง/ข้าง</div>
-          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">04 — core</div>
-        <div class="ex-name">Plank</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>45</strong> วินาที</div>
-          <div class="ex-set-pill">พัก <strong>30</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">05 — core</div>
-        <div class="ex-name">Leg Raises</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
-        </div>
-      </div>
+    <div class="timer-set-info">เซ็ตที่ <strong>${s.currentSet}</strong> จาก <strong>${s.totalSets}</strong></div>
+    <div class="timer-controls">
+      <button class="timer-btn primary" id="timerPlayBtn" onclick="toggleTimer()">${s.running ? "⏸ หยุด" : "▶ เริ่ม"}</button>
+      <button class="timer-btn secondary" onclick="resetCurrentTimer()">↺ รีเซ็ต</button>
+      ${s.phase === "rest" ? `<button class="timer-btn danger" onclick="skipRest()">⏩ ข้ามพัก</button>` : ""}
     </div>
+  `;
+    }
 
-    <div class="schedule-section">
-      <div class="section-heading">ตารางเวลาวันนี้</div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">05:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--cardio)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🔥 HIIT 30 นาที</div><div class="tl-desc">เชือกกระโดด + core circuit</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:05</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div><div class="tl-desc">โปรตีนสูง — ไข่ + กรีกโยเกิร์ต</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer" style="--dot-color:var(--muted)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🚌 ขึ้นรถรับส่ง</div><div class="tl-desc">ดื่มน้ำ 500 มล. ระหว่างเดินทาง</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">22:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
-          <div class="tl-content"><div class="tl-label">😴 นอน</div><div class="tl-desc">ร่างกายซ่อมแซมกล้ามเนื้อระหว่างหลับ</div></div>
-        </div>
-      </div>
+    function toggleTimer() {
+      if (!timerState) return;
+      timerState.running = !timerState.running;
+      if (timerState.running) {
+        timerInterval = setInterval(tickTimer, 1000);
+      } else {
+        clearInterval(timerInterval);
+      }
+      document.getElementById("timerPlayBtn").textContent = timerState.running
+        ? "⏸ หยุด"
+        : "▶ เริ่ม";
+    }
+
+    function tickTimer() {
+      const s = timerState;
+      s.timeLeft--;
+      updateTimerDisplay();
+      if (s.timeLeft <= 0) {
+        clearInterval(timerInterval);
+        s.running = false;
+        playBeep();
+        if (s.phase === "work") {
+          // Work phase done → go to rest
+          s.phase = "rest";
+          s.timeLeft = s.restSecs;
+          s.totalTime = s.restSecs;
+          // Mark set done
+          markSetDone(s.day, s.exIdx, s.currentSet - 1);
+          renderTimerModal();
+        } else {
+          // Rest phase done
+          if (s.currentSet >= s.totalSets) {
+            // All sets done!
+            showComplete();
+          } else {
+            s.currentSet++;
+            s.phase = s.workSecs ? "work" : "rest";
+            s.timeLeft = s.workSecs || s.restSecs;
+            s.totalTime = s.workSecs || s.restSecs;
+            renderTimerModal();
+            // Auto-start next set
+            setTimeout(() => {
+              if (timerState) {
+                timerState.running = true;
+                timerInterval = setInterval(tickTimer, 1000);
+                document.getElementById("timerPlayBtn").textContent =
+                  "⏸ หยุด";
+              }
+            }, 400);
+          }
+        }
+      }
+    }
+
+    function updateTimerDisplay() {
+      const s = timerState;
+      const secEl = document.getElementById("timerSeconds");
+      const circEl = document.getElementById("timerCircle");
+      if (secEl) secEl.textContent = s.timeLeft;
+      if (circEl) {
+        const offset = CIRCUMFERENCE * (1 - s.timeLeft / s.totalTime);
+        circEl.style.strokeDashoffset = offset;
+      }
+    }
+
+    function resetCurrentTimer() {
+      const s = timerState;
+      clearInterval(timerInterval);
+      s.running = false;
+      s.timeLeft = s.totalTime;
+      renderTimerModal();
+    }
+
+    function skipRest() {
+      const s = timerState;
+      clearInterval(timerInterval);
+      s.running = false;
+      if (s.currentSet >= s.totalSets) {
+        showComplete();
+        return;
+      }
+      s.currentSet++;
+      s.phase = s.workSecs ? "work" : "rest";
+      s.timeLeft = s.workSecs || s.restSecs;
+      s.totalTime = s.workSecs || s.restSecs;
+      renderTimerModal();
+    }
+
+    function markSetDone(day, exIdx, setIdx) {
+      const data = loadData();
+      const key = `sets-${day}-${exIdx}`;
+      const current = data[key] || 0;
+      data[key] = Math.max(current, setIdx + 1);
+      saveData(data);
+      buildSetDots();
+    }
+
+    function showComplete() {
+      clearInterval(timerInterval);
+      const s = timerState;
+      // Mark all sets done
+      markSetDone(s.day, s.exIdx, s.totalSets - 1);
+      document.getElementById("timerContent").innerHTML = `
+    <div class="timer-complete">🎉</div>
+    <div class="timer-complete-title">ครบทุกเซ็ต!</div>
+    <div class="timer-complete-sub">${s.name} — ${s.totalSets} เซ็ตเสร็จแล้ว</div>
+    <div class="timer-controls">
+      <button class="timer-btn primary" onclick="closeTimer()">✓ ปิด</button>
     </div>
-  </div>
+  `;
+      showToast(`💪 ${s.name} ครบแล้ว!`);
+    }
 
-  <!-- ===== WEDNESDAY ===== -->
-  <div class="panel" id="panel-wed">
-    <div class="panel-header">
-      <div class="panel-title-area">
-        <div class="type-badge" style="background:rgba(124,58,237,0.15); color:#B48EFF; border:1px solid rgba(124,58,237,0.3)">
-          🦵 Lower Body Strength
-        </div>
-        <div class="panel-title">วันพุธ</div>
-        <div class="panel-sub">เน้นกล้ามเนื้อส่วนล่าง — ขา · สะโพก · น่อง</div>
-      </div>
-      <div class="panel-meta">
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#B48EFF">40</div>
-          <div class="meta-chip-label">นาที</div>
-        </div>
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#B48EFF">5</div>
-          <div class="meta-chip-label">ท่า</div>
-        </div>
-      </div>
-    </div>
+    function closeTimer() {
+      clearInterval(timerInterval);
+      timerState = null;
+      document.getElementById("timerOverlay").classList.remove("show");
+    }
 
-    <div class="exercises-grid">
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">01 — ต้นขา</div>
-        <div class="ex-name">Goblet Squat (ดัมเบล)</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">02 — ต้นขา</div>
-        <div class="ex-name">Reverse Lunge (ดัมเบล)</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">03 — หลังขา</div>
-        <div class="ex-name">Romanian Deadlift</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>75</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">04 — สะโพก</div>
-        <div class="ex-name">Glute Bridge</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">05 — น่อง</div>
-        <div class="ex-name">Calf Raise</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>20</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
-        </div>
-      </div>
-    </div>
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.5);
+      } catch (e) { }
+    }
 
-    <div class="schedule-section">
-      <div class="section-heading">ตารางเวลาวันนี้</div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">05:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--fullbody)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🦵 Lower body 40 นาที</div><div class="tl-desc">ดัมเบล squat/lunge/deadlift</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:15</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#34D399"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🍳 อาหารเช้า + อาบน้ำ</div><div class="tl-desc">คาร์บเชิงซ้อน + โปรตีน เพื่อพลังงาน</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer" style="--dot-color:var(--muted)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🚌 ขึ้นรถรับส่ง</div><div class="tl-desc">—</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">22:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
-          <div class="tl-content"><div class="tl-label">😴 นอน</div><div class="tl-desc">กล้ามเนื้อขาต้องการการพักฟื้น</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== THURSDAY (REST) ===== -->
-  <div class="panel" id="panel-thu">
-    <div class="rest-card">
-      <div class="rest-icon">🌿</div>
-      <div class="rest-title">วันพฤหัส — วันพักเบา</div>
-      <div class="rest-sub">ร่างกายต้องการเวลาซ่อมแซมกล้ามเนื้อ<br>การพักคือส่วนสำคัญของการพัฒนา ไม่ใช่การหยุด</div>
-      <div class="rest-tips">
-        <div class="rest-tip">🚶 เดิน 15–20 นาที</div>
-        <div class="rest-tip">🧘 ยืดกล้ามเนื้อ</div>
-        <div class="rest-tip">💧 ดื่มน้ำ 2.5 ลิตร</div>
-        <div class="rest-tip">😴 นอนหลับให้ครบ</div>
-      </div>
-    </div>
-    <div class="schedule-section">
-      <div class="section-heading">ตารางเวลาวันนี้</div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">06:00</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--rest)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🌅 ตื่นนอนสาย (ไม่ต้องออกกำลังกาย)</div><div class="tl-desc">ร่างกายได้พักเต็มที่</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">18:00</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:var(--rest)"></div><div class="tl-line"></div></div>
-          <div class="tl-content"><div class="tl-label">🧘 ยืดกล้ามเนื้อ 15–20 นาที</div><div class="tl-desc">เน้นขาและหลัง หลังจากนั่งทำงานทั้งวัน</div></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left"><div class="tl-time">22:30</div></div>
-          <div class="tl-center"><div class="tl-dot-outer filled" style="--dot-color:#7B8CFF"></div></div>
-          <div class="tl-content"><div class="tl-label">😴 นอนหลับให้ครบ 7 ชั่วโมง</div><div class="tl-desc">—</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== FRIDAY ===== -->
-  <div class="panel" id="panel-fri">
-    <div class="panel-header">
-      <div class="panel-title-area">
-        <div class="type-badge" style="background:rgba(124,58,237,0.15); color:#B48EFF; border:1px solid rgba(124,58,237,0.3)">
-          ⚡ Full Body Circuit
-        </div>
-        <div class="panel-title">วันศุกร์</div>
-        <div class="panel-sub">เต็มสัปดาห์ปิดด้วย circuit training ทั้งร่างกาย</div>
-      </div>
-      <div class="panel-meta">
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#B48EFF">40</div>
-          <div class="meta-chip-label">นาที</div>
-        </div>
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#B48EFF">6</div>
-          <div class="meta-chip-label">ท่า</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="exercises-grid">
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">01 — ขา + ไหล่</div>
-        <div class="ex-name">Squat to Press</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">02 — อก</div>
-        <div class="ex-name">Push-up</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">03 — หลัง</div>
-        <div class="ex-name">Dumbbell Row</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>12</strong> ครั้ง/ข้าง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">04 — ขา + คาร์ดิโอ</div>
-        <div class="ex-name">Jump Squat</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>10</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">05 — core</div>
-        <div class="ex-name">Plank Rotation</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>30</strong> วินาที</div>
-          <div class="ex-set-pill">พัก <strong>30</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--fullbody)"></div>
-        <div class="ex-num" style="--accent-color:var(--fullbody)">06 — cool-down</div>
-        <div class="ex-name">เชือกกระโดด (เบาๆ)</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>2</strong> นาที</div>
-          <div class="ex-set-pill">ความเร็วปานกลาง</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== SATURDAY ===== -->
-  <div class="panel" id="panel-sat">
-    <div class="panel-header">
-      <div class="panel-title-area">
-        <div class="type-badge" style="background:rgba(232,83,26,0.15); color:#FF8C5A; border:1px solid rgba(232,83,26,0.3)">
-          🔥 HIIT คาร์ดิโอ
-        </div>
-        <div class="panel-title">วันเสาร์</div>
-        <div class="panel-sub">วันหยุด — เผาพลังงานเต็มที่ ไม่มีข้อจำกัดเวลา</div>
-      </div>
-      <div class="panel-meta">
-        <div class="meta-chip">
-          <div class="meta-chip-val" style="color:#FF8C5A">40</div>
-          <div class="meta-chip-label">นาที</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="exercises-grid">
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">warm-up</div>
-        <div class="ex-name">เชือกกระโดดวอร์มอัพ</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> นาที</div>
-          <div class="ex-set-pill">ความเร็วปานกลาง</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">01 — HIIT</div>
-        <div class="ex-name">เชือกกระโดด Sprint</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill">สปรินต์ <strong>40</strong> วิ</div>
-          <div class="ex-set-pill">พัก <strong>20</strong> วิ</div>
-          <div class="ex-set-pill"><strong>10</strong> รอบ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">02 — ทั้งตัว</div>
-        <div class="ex-name">Burpee + Tuck Jump</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>4</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>8</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>60</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">03 — core</div>
-        <div class="ex-name">V-ups</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>3</strong> เซ็ต</div>
-          <div class="ex-set-pill"><strong>15</strong> ครั้ง</div>
-          <div class="ex-set-pill">พัก <strong>45</strong> วิ</div>
-        </div>
-      </div>
-      <div class="ex-card">
-        <div class="ex-card-accent" style="--accent-color:var(--cardio)"></div>
-        <div class="ex-num" style="--accent-color:var(--cardio)">cool-down</div>
-        <div class="ex-name">ยืดกล้ามเนื้อ</div>
-        <div class="ex-sets">
-          <div class="ex-set-pill"><strong>10</strong> นาที</div>
-          <div class="ex-set-pill">ทั่วร่างกาย</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== SUNDAY (REST) ===== -->
-  <div class="panel" id="panel-sun">
-    <div class="rest-card">
-      <div class="rest-icon">☀️</div>
-      <div class="rest-title">วันอาทิตย์ — วันพักผ่อนเต็ม</div>
-      <div class="rest-sub">สัปดาห์ใหม่เริ่มพรุ่งนี้ วันนี้ให้ร่างกายและจิตใจได้ชาร์จพลังงาน<br>ไม่ต้องออกกำลังกาย ยืดเบาๆ ได้ถ้าอยาก</div>
-      <div class="rest-tips">
-        <div class="rest-tip">🛁 พักผ่อนเต็มที่</div>
-        <div class="rest-tip">🧘 โยคะเบาๆ ได้</div>
-        <div class="rest-tip">🥗 กินดี มีสุขภาพ</div>
-        <div class="rest-tip">🌙 นอนหลับให้ครบ</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Nutrition Quick Guide -->
-  <div class="schedule-section">
-    <div class="section-heading">แนวทางการกิน</div>
-    <div class="nutrition-grid">
-      <div class="nut-card">
-        <div class="nut-icon">🌅</div>
-        <div class="nut-title">มื้อเช้า (ก่อน 06:30)</div>
-        <ul class="nut-list">
-          <li>ไข่ต้ม / ไข่ดาว 2–3 ฟอง</li>
-          <li>ข้าวกล้อง / ขนมปังโฮลวีต</li>
-          <li>กล้วย 1 ลูก</li>
-          <li>น้ำเปล่า 2 แก้ว</li>
-        </ul>
-      </div>
-      <div class="nut-card">
-        <div class="nut-icon">☀️</div>
-        <div class="nut-title">มื้อกลางวัน</div>
-        <ul class="nut-list">
-          <li>ไก่ / ปลา / เต้าหู้</li>
-          <li>ผัก 1–2 อย่าง</li>
-          <li>ข้าว ½–¾ ถ้วย</li>
-          <li>หลีกเลี่ยงน้ำหวาน</li>
-        </ul>
-      </div>
-      <div class="nut-card">
-        <div class="nut-icon">🌙</div>
-        <div class="nut-title">มื้อเย็น (ก่อน 19:00)</div>
-        <ul class="nut-list">
-          <li>ปลา / ไก่ต้ม (โปรตีนสูง)</li>
-          <li>ผักนึ่ง / ต้ม 2 ถ้วย</li>
-          <li>ลดแป้ง / งดข้าว</li>
-          <li>หยุดกินหลัง 21:30</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- Legend -->
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--strength)"></div>Strength — กล้ามเนื้อ</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--cardio)"></div>Cardio — คาร์ดิโอ</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--fullbody)"></div>Full Body — เต็มตัว</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--rest)"></div>Rest — พักฟื้น</div>
-  </div>
-
-</div>
-
-<script>
-  function switchTab(el, panelId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('panel-' + panelId).classList.add('active');
-  }
-
-  // Highlight today
-  const days = ['sun','mon','tue','wed','thu','fri','sat'];
-  const today = days[new Date().getDay()];
-  const todayTab = document.querySelector(`[data-panel="${today}"]`);
-  if (todayTab) {
-    const dot = document.createElement('div');
-    dot.className = 'today-dot';
-    dot.style.background = getComputedStyle(todayTab).getPropertyValue('--tab-color').trim() || '#888';
-    todayTab.appendChild(dot);
-  }
-</script>
+    // ===== Init =====
+    function init() {
+      markToday();
+      buildSetDots();
+      renderDoneButtons();
+      renderWeekDots();
+      renderTabChecks();
+    }
+    init();
+  </script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </body>
+
 </html>

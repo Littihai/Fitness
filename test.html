@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Exercise Animation</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:40px;
+    background:#0f172a;
+    font-family:Arial,sans-serif;
+    color:white;
+}
+
+.title{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.sub{
+    color:#94a3b8;
+    margin-bottom:40px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:24px;
+}
+
+.card{
+    background:linear-gradient(145deg,#111827,#1e293b);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.05);
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+}
+
+.image-wrap{
+    background:#020617;
+    padding:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:260px;
+}
+
+.image-wrap img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+}
+
+.content{
+    padding:22px;
+}
+
+.content h2{
+    margin:0 0 10px;
+    font-size:24px;
+}
+
+.content p{
+    margin:0;
+    color:#94a3b8;
+    line-height:1.5;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">
+    Exercise Animation
+</div>
+
+<div class="sub">
+    Animated workout exercise demonstrations
+</div>
+
+<div class="grid">
+
+    <!-- Push-up -->
+    <div class="card">
+
+        <div class="image-wrap">
+            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Push-Up.gif">
+        </div>
+
+        <div class="content">
+            <h2>Push-up</h2>
+            <p>Chest, shoulder and tricep exercise.</p>
+        </div>
+
+    </div>
+
+    <!-- Dumbbell Row -->
+    <div class="card">
+
+        <div class="image-wrap">
+            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Row.gif">
+        </div>
+
+        <div class="content">
+            <h2>Dumbbell Row</h2>
+            <p>Back and lat focused pulling movement.</p>
+        </div>
+
+    </div>
+
+    <!-- Overhead Press -->
+    <div class="card">
+
+        <div class="image-wrap">
+            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif">
+        </div>
+
+        <div class="content">
+            <h2>Overhead Press</h2>
+            <p>Shoulder strength and stability exercise.</p>
+        </div>
+
+    </div>
+
+    <!-- Pull-up -->
+    <div class="card">
+
+        <div class="image-wrap">
+            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Pull-up.gif">
+        </div>
+
+        <div class="content">
+            <h2>Pull-up / Chin-up</h2>
+            <p>Upper body pulling exercise for back and arms.</p>
+        </div>
+
+    </div>
+
+    <!-- Bicep Curl -->
+    <div class="card">
+
+        <div class="image-wrap">
+            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Curl.gif">
+        </div>
+
+        <div class="content">
+            <h2>Bicep Curl</h2>
+            <p>Isolation exercise for the biceps.</p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
